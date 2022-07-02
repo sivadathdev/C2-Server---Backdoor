@@ -28,7 +28,7 @@ We can do a few things in the C2-Center.
 
 We can list all the available sessions by using the "targets" command.
 
-We can access each sessions by "session #sessionnum", can background a session by "background" command. "sendall command" can be used to execute a command on both the target machines simultaneously. We can kill a session using "kill #sessionnum" command. The image below shows all this.
+We can access each sessions by "session #sessionnum", can background a session by "background" command. "sendall" command can be used to execute a command on both the target machines simultaneously. We can kill a session using "kill #sessionnum" command. The image below shows all this.
 
 ![image4](images/image-4.jpg)
 
@@ -57,6 +57,8 @@ The screenshot command takes the screenshot of the target machine.
  Here we can see the credentials typed by the user from the output of the "keylog_dump" command.
  
  We can also create persistance by hiding our backdoor & adding it to the registry.
+ 
+  ![image12](images/image-12.jpg)
  
   ![image11](images/image-11.jpg)
   
